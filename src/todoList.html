@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            min-width: 250px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul li {
+            cursor: pointer;
+            position: relative;
+            padding: 12px 8px 12px 40px;
+            list-style-type: none;
+            background: #eee;
+            font-size: 18px;
+            transition: 0.2s;
+
+
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+
+        ul li:nth-child(odd) {
+            background: #f9f9f9;
+        }
+
+        ul li:hover {
+            background: #ddd;
+        }
+
+
+        ul li.checked {
+            background: #888;
+            color: #fff;
+            text-decoration: line-through;
+        }
+
+
+        ul li.checked::before {
+            content: '';
+            position: absolute;
+            border-color: #fff;
+            border-style: solid;
+            border-width: 0 2px 2px 0;
+            top: 10px;
+            left: 16px;
+            transform: rotate(45deg);
+            height: 15px;
+            width: 7px;
+        }
+
+
+        .close {
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 12px 16px 12px 16px;
+        }
+
+        .close:hover {
+            background-color: #f44336;
+            color: white;
+        }
+
+
+        .header {
+            background-color: #f44336;
+            padding: 30px 40px;
+            color: white;
+            text-align: center;
+        }
+
+
+        .header:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+
+        input {
+            margin: 0;
+            border: none;
+            border-radius: 0;
+            width: 75%;
+            padding: 10px;
+            float: left;
+            font-size: 16px;
+        }
+
+
+        .addBtn {
+            padding: 8px;
+            width: 25%;
+            background: #d9d9d9;
+            color: #555;
+            float: left;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 0;
+        }
+        .otherBtn{
+            padding: 10px;
+            width: 25%;
+            background: #f44336;
+            color: #555;
+            float: left;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 0;
+        }
+
+        .addBtn:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+
+<div id="myDIV" class="header">
+    <h2 style="margin:5px">My To Do List</h2>
+    <input type="text" id="myInput" placeholder="Title...">
+    <span onclick="newElement()" class="addBtn">Add</span>
+    <span onclick="Done()" class="otherBtn">Done</span>
+    <span onclick="tobeDone()" class="otherBtn">ToDo</span>
+    <span class="otherBtn" id = revsortbtn>RevSort</span>
+    <span class="otherBtn" id = sortbtn>Sort</span>
+    <span onclick="showall()" class="otherBtn">All</span>
+
+</div>
+
+<ul class = datalist id="myUL" >
+    <li class="unchecked item">
+        <span class = "item-id">6</span>
+        <span class = "item-name">Go to school</span>
+    </li>
+    <li class="checked item">
+        <span class = "item-id">2</span>
+        <span class = "item-name">Pay bills</span>
+    </li>
+    <li class="unchecked item">
+        <span class = "item-id">4</span>
+        <span class = "item-name">Meet George</span>
+    </li>
+    <li class="unchecked item">
+        <span class = "item-id">5</span>
+        <span class = "item-name">Buy eggs</span>
+    </li>
+    <li class="unchecked item">
+        <span class = "item-id">3</span>
+        <span class = "item-name">Read a book</span>
+    </li>
+    <li class="unchecked item">
+        <span class = "item-id">1</span>
+        <span class = "item-name">Organize office</span>
+    </li>
+</ul>
+
+<script src="http://cdn.bootcss.com/jquery/3.0.0-alpha1/jquery.min.js"></script>
+<script>
+    //add remove mark to pre-exist list
+    var myNodelist = document.getElementsByTagName("LI");
+    var i;
+    for (i = 0; i < myNodelist.length; i++) {
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+        myNodelist[i].appendChild(span);
+    }
+    
+    var close = document.getElementsByClassName("close");
+    var i;
+    for (i = 0; i < close.length; i++) {
+        close[i].onclick = function() {
+            var div = this.parentElement;
+            div.style.display = "none";
+        }
+    }
+    //marked as checked when click
+    var list = document.querySelector('ul');
+    list.addEventListener('click', function(ev) {
+        if (ev.target.tagName === 'LI') {
+            ev.target.classList.remove("unchecked");
+            ev.target.classList.add("checked");
+        }
+
+    }, false);
+
+    //move to the last of the list
+    $('#myUL').on('click', 'li', function(){
+        $('#myUL').append($(this));
+    });
+    //add new element
+    function newElement() {
+        var li = document.createElement("li");
+        li.className = "unchecked item";
+        var span1 = document.createElement("SPAN");
+        span1.className = "item-id";
+        var span2 = document.createElement("SPAN");
+        span2.className = "item-name";
+        var inputValue = document.getElementById("myInput").value;
+        var t = document.createTextNode(inputValue);
+        var lengli = $("#myUL li").length;
+        var t2 = document.createTextNode(lengli + 1 +" ");
+        span1.appendChild(t2);
+        span2.appendChild(t);
+        li.appendChild(span1);
+        li.appendChild(span2);
+        if (inputValue === '') {
+            alert("You must write something!");
+        } else {
+            document.getElementById("myUL").appendChild(li);
+        }
+        document.getElementById("myInput").value = "";
+
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+        li.appendChild(span);
+        for (i = 0; i < close.length; i++) {
+            close[i].onclick = function() {
+                var div = this.parentElement;
+                div.style.display = "none";
+            }
+        }
+    }
+    //show list that marked as done
+    function Done(){
+        $(".checked").show();
+        $(".unchecked").hide();
+    }
+    //show list not done
+    function tobeDone(){
+        $(".checked").hide();
+        $(".unchecked").show();
+    }
+    //show all the list
+    function showall(){
+        $(".unchecked").show();
+        $(".checked").show();
+    }
+    //sort the list
+    var sortDom = function(flag,$domlist){
+        var $item = $domlist.find('.item');
+        var $newList = Array.prototype.sort.call($item,function(a,b){
+            return flag ? ($(a).find('.item-id').html()-0) - ($(b).find('.item-id').html()-0) : ($(b).find('.item-id').html()-0) - ($(a).find('.item-id').html()-0)
+        });
+        return $newList;
+    }
+    $('#sortbtn').click(function(){
+        var $domlist = $('.datalist');
+        var $result = sortDom(true,$domlist);
+        $('.datalist').html($result);
+    });
+    //sort reverse list
+
+    var sortDom2 = function(flag,$domlist){
+        var $item = $domlist.find('.item');
+        var $newList = Array.prototype.sort.call($item,function(a,b){
+            return flag ? ($(a).find('.item-id').html()-0) - ($(b).find('.item-id').html()-0) : ($(b).find('.item-id').html()-0) - ($(a).find('.item-id').html()-0)
+        });
+        return $newList;
+    }
+    $('#revsortbtn').click(function(){
+        var $domlist2 = $('.datalist');
+        var $result2 = sortDom2(false,$domlist2);
+        $('.datalist').html($result2);
+    });
+
+
+</script>
+
+</body>
+</html>
